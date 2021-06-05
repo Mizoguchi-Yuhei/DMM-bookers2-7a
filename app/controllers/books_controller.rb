@@ -10,9 +10,12 @@ class BooksController < ApplicationController
     @user = current_user
     # @books = Book.joins(:favorites).where(favorites: {created_at: 0.days.ago.prev_week..0.days.ago.prev_week})
     # @books = Book.find(Favorite.group(:book_id).order('count(book_id) desc').pluck(:book_id))
-    to = Time.current.at_end_of_day
-    from = (to- 6.day).at_beginning_of_day
-    @books = Book.includes(:favorited_users).where(favorites: {created_at: from...to}).sort {|a,b| b.favorited_users.size <=> a.favorited_users.size}
+
+    # to = Time.current.at_end_of_day
+    # from = (to- 6.day).at_beginning_of_day
+    # @books = Book.includes(:favorited_users).where(favorites: {created_at: from...to}).sort {|a,b| b.favorited_users.size <=> a.favorited_users.size}
+    @books = Book.includes(:favorites).sort {|a,b| b.favorites.size <=> a.favorites.size}
+    # 全期間でのいいね数順(いいね0を含む)
     @new_book = Book.new
   end
 
